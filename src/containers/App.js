@@ -1,7 +1,7 @@
 
 import React, {Component} from 'react'
 import Header from '../components/Header/Header'
-import TimeOptions from '../components/Time/TimeOptions/TimeOptions'
+import TimeOptions from './TimeOptions/TimeOptions'
 import TimeInputContainer from './TimeInputContainer/TimeInputContainer'
 import Score from '../components/Score/Score'
 import Tips from '../components/Tips/Tips'

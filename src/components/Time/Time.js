@@ -1,22 +1,19 @@
 import React from 'react'
-import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
 import Container from 'react-bootstrap/Container'
+import classes from './Time.module.css'
 const Time = (props) => {
     return(
         <div>
             <Container>
-                <Row>
-                    <Col> 
-                        {props.day}
-                    </Col>
-                    <Col>
-                        {props.date}
-                    </Col>
-                    <Col> 
-                        {props.time}
-                    </Col>
-                </Row>
+                <div className = {classes.timeDisplay}>
+                    {props.day}
+                </div>
+                <div className = {classes.timeDisplay}>
+                    {props.date}
+                </div>
+                <div className = {classes.timeDisplay}> 
+                    {props.time}
+                </div>
             </Container>
             
         </div>

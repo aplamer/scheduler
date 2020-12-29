@@ -1,0 +1,6 @@
+.timeDisplay{
+    display: inline-block;
+    padding-right: 50px;
+    font-size: 25px;
+    font-weight: bold;
+}
