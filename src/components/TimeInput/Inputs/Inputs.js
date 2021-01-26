@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row'
 const Inputs = () => {
     return(
         <Container>
-            <h2>Today' Times</h2>
+            <h2>Today's Times</h2>
             <br></br>
             <Row>
                 <Col>
