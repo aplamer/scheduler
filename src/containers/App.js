@@ -5,7 +5,6 @@ import TimeOptions from './TimeOptions/TimeOptions'
 import TimeInputContainer from './TimeInputContainer/TimeInputContainer'
 import Score from '../components/Score/Score'
 import Tips from '../components/Tips/Tips'
-import Modal from '../components/UI/Modal/Modal'
 class App extends Component{
     
     render(){
