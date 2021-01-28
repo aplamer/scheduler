@@ -60,11 +60,11 @@ class Inputs extends Component {
             else{
                 if(this.state.sleepTime.length === 2 && 
                     event.nativeEvent.inputType === "insertText"){
-                    this.setState({sleepTime: event.target.value.slice(0,2) + ":" + event.target.value[2]})
+                    this.setState({sleepTime: event.target.value.slice(0,2) + ":" + event.target.value[2], colonChecker: true})
                 }
                 else if(this.state.sleepTime.length === 4 && 
                     event.nativeEvent.inputType === "deleteContentBackward"){
-                    this.setState({sleepTime: event.target.value.slice(0,2)})
+                    this.setState({sleepTime: event.target.value.slice(0,2), colonChecker: false})
                 }
                 else{
                     this.setState({sleepTime: event.target.value})
