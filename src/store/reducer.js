@@ -2,6 +2,8 @@ import * as actionTypes from './actions';
 
 const initialState = {
     sleepScore: "100",
+    timeSettings: "Regular",
+    dateSettings: "MDY",
     Times: [
         {
             id: "-1",
@@ -65,6 +67,21 @@ const reducer = (state = initialState, action) => {
         return {
             ...state,
             Times: newTimes
+        }
+    }
+
+    if(action.type === "CHANGE_SETTINGS"){
+        if(action.timeOrDate === "Date"){
+            return {
+                ...state,
+                dateSettings: action.value
+            }
+        }
+        if(action.timeOrDate === "Time"){
+            return {
+                ...state,
+                timeSettings: action.value
+            }
         }
     }
     return state;

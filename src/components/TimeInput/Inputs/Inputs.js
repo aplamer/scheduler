@@ -8,12 +8,67 @@ import {connect} from 'react-redux'
 
 import InputGroup from 'react-bootstrap/InputGroup'
 import FormControl from 'react-bootstrap/FormControl'
+import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
 class Inputs extends Component {
     state = {
-        sleepTime: "N/A",
-        wakeTime: "N/A"
+        sleepTime: "",
+        wakeTime: "",
+        button1: "AM",
+        button2: "PM"
     }
 
+    toggleButtonHandler = (value) => {
+        if(value === 1){
+            if(this.state.button1 === "AM"){
+                this.setState({button1: "PM"})
+            }
+            else{
+                this.setState({button1: "AM"})
+            }
+        }
+        else{
+            if(this.state.button2 === "AM"){
+                this.setState({button2: "PM"})
+            }
+            else{
+                this.setState({button2: "AM"})
+            }
+        }
+    }
+
+    checkValidInput = (event, time) => {
+        console.log(event);
+        if(event.target.value.length <= 5 && (/^[0-9\b]+$/.test(event.target.value) || event.target.value === "" || event.target.value[2] === ":")){
+            if(time === "wake"){
+                if(this.state.wakeTime.length === 1 && 
+                    event.nativeEvent.inputType === "insertText"){
+                    this.setState({wakeTime: event.target.value + ":"})
+                }
+                else if(this.state.wakeTime.length === 3 && 
+                    event.nativeEvent.inputType === "deleteContentBackward"){
+                    this.setState({wakeTime: event.target.value.slice(0,1)})
+                }
+                else{
+                    this.setState({wakeTime: event.target.value})
+                }
+
+            } 
+            else{
+                if(this.state.sleepTime.length === 1 && 
+                    event.nativeEvent.inputType === "insertText"){
+                    this.setState({sleepTime: event.target.value + ":"})
+                }
+                else if(this.state.sleepTime.length === 3 && 
+                    event.nativeEvent.inputType === "deleteContentBackward"){
+                    this.setState({sleepTime: event.target.value.slice(0,1)})
+                }
+                else{
+                    this.setState({sleepTime: event.target.value})
+                }
+            }
+        }
+        
+    }
     render(){
         return(
             <Container>
@@ -23,14 +78,17 @@ class Inputs extends Component {
                     <Col>
                         Wakeup Time
                         <InputGroup size = "lg">
-                            <FormControl onChange = {event => this.setState({wakeTime: event.target.value})} placeholder = "12:00PM" aria-label="Large" aria-describedby="inputGroup-sizing-sm" />
+                            <FormControl value = {this.state.wakeTime} onChange = {event => this.checkValidInput(event, "wake")} placeholder = "12:00" aria-label="Large" aria-describedby="inputGroup-sizing-sm" />
+                            <Button disabled = {this.props.timeSettings === "Military"} onClick = {() => this.toggleButtonHandler(1)}>{this.state.button1}</Button>
                         </InputGroup>
                     </Col>
     
                     <Col>
                         Sleep Time
                         <InputGroup size = "lg">
-                            <FormControl onChange = {event => this.setState({sleepTime: event.target.value})} placeholder = "12:00PM" aria-label="Large" aria-describedby="inputGroup-sizing-sm" />
+                            <FormControl value = {this.state.sleepTime} onChange = {event => this.checkValidInput(event, "sleep")} placeholder = "12:00" aria-label="Large" aria-describedby="inputGroup-sizing-sm" />
+                            <DropdownMenu/>
+                            <Button disabled = {this.props.timeSettings === "Military"} onClick = {() => this.toggleButtonHandler(2)}>{this.state.button2}</Button>
                         </InputGroup>
                     </Col>
                 </Row>
@@ -49,7 +107,8 @@ class Inputs extends Component {
 const mapStateToProps = state => {
     return {
         times: state.Times,
-        score: state.sleepScore
+        score: state.sleepScore,
+        timeSettings: state.timeSettings
     }
 }
 

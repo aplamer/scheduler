@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container'
 import Col from 'react-bootstrap/Col'
 import Row from 'react-bootstrap/Row'
 import classes from './TimeOptions.module.css'
+import {connect} from 'react-redux'
 class TimeOptions extends Component{
     constructor(){
         super();
@@ -28,8 +29,6 @@ class TimeOptions extends Component{
             Minute: minute,
             Second: second,
             Day: day,
-            TimeType: 'Regular',
-            DateType: 'MDY',
             AMPM: AMorPM
         };
 
@@ -80,28 +79,18 @@ class TimeOptions extends Component{
         }
         this.setState({ Date: date, Month: month, Year: year, Hour: hour, TotalHour: totalhour, Minute: minute, Second: second, Day: day, AMPM: AMorPM})
     }
-
-    dateHandler = (event, type) => {
-        if(type === "Date"){ 
-            this.setState({DateType: event.target.value});
-        }
-        else if (type === "Time"){
-            this.setState({TimeType: event.target.value});
-        }
-                
-    }
     render(){
 
         let fullTime = null;
-        if(this.state.TimeType === "Regular"){
+        if(this.props.timeType === "Regular"){
             fullTime = this.state.Hour + ":" + this.state.Minute + ":" + this.state.Second + this.state.AMPM;
         }
-        else if(this.state.TimeType === "Military"){
+        else if(this.props.timeType === "Military"){
             fullTime = this.state.TotalHour + ":" + this.state.Minute + ":" + this.state.Second;
         }
 
         let fullDate = null;
-        switch (this.state.DateType){
+        switch (this.props.dateType){
             case "MDY":
                 fullDate = 
                 <Time 
@@ -141,13 +130,13 @@ class TimeOptions extends Component{
                 </Row>
                 <Row>
                     <Col>  
-                    <select value = {this.state.DateType} className = {classes.dropdownOption} onChange = {(event) => this.dateHandler(event, "Date")}>
+                    <select value = {this.props.dateType} className = {classes.dropdownOption} onChange = {(event) => this.props.onChangeSettings(event, "Date")}>
                         <option value="MDY">MDY</option>
                         <option value="DMY">DMY</option>
                         <option value="YMD">YMD</option>
                     </select>
             
-                    <select value = {this.state.TimeType} className = {classes.dropdownOption}  onChange = {(event) => this.dateHandler(event, "Time")}>
+                    <select value = {this.props.timeType} className = {classes.dropdownOption}  onChange = {(event) => this.props.onChangeSettings(event, "Time")}>
                         <option value="Regular">Regular</option>
                         <option value="Military">Military</option>
                     </select>
@@ -164,4 +153,17 @@ class TimeOptions extends Component{
         )
     }
 }
-export default TimeOptions;
+
+const mapStateToProps = state =>{
+    return{
+        timeType: state.timeSettings,
+        dateType: state.dateSettings
+    }
+}
+
+const mapDispatchToProps = dispatch => {
+    return {
+        onChangeSettings: (data, changing) => dispatch({type: "CHANGE_SETTINGS", value: data.target.value, timeOrDate: changing}),
+    }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(TimeOptions);
