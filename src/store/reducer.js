@@ -48,8 +48,55 @@ const initialState = {
     */
 };
 
-
 const reducer = (state = initialState, action) => {
+    
+const militaryToRegularHandler = (time) => {
+    let tempTimeValue = time.slice(0,2) + time.slice(3,5)
+    let AMorPM = "AM"
+
+    tempTimeValue = parseInt(tempTimeValue)
+
+    if(tempTimeValue >= 1200 && tempTimeValue <= 1259){
+        AMorPM = "PM"
+    }
+    else if (tempTimeValue > 1259 && tempTimeValue < 2400){
+        AMorPM = "PM"
+        tempTimeValue -= 1200
+    }
+    else if (tempTimeValue >= 2400){
+        tempTimeValue -= 1200
+    }
+    
+    if(tempTimeValue < 1000){
+        tempTimeValue = "0" + tempTimeValue.toString()
+    }
+    else{
+        tempTimeValue = tempTimeValue.toString()
+    }
+
+    return (tempTimeValue.slice(0,2) + ":" + tempTimeValue.slice(2,4) + AMorPM)
+}
+
+const regularToMilitaryHandler = (time) => {
+    let tempTimeValue = time.slice(0,2) + time.slice(3,5)
+    let AMorPM = time.slice(5,7);
+
+    tempTimeValue = parseInt(tempTimeValue)
+
+    if((AMorPM === "PM" && tempTimeValue < 1200) || (AMorPM === "AM" && tempTimeValue >= 1200)){
+        tempTimeValue += 1200
+    }
+    
+    if(tempTimeValue < 1000){
+        tempTimeValue = "0" + tempTimeValue.toString()
+    }
+    else{
+        tempTimeValue = tempTimeValue.toString()
+    }
+    
+    return tempTimeValue.slice(0,2) + ":" + tempTimeValue.slice(2,4)
+}
+
     if(action.type === "ADD"){
         const newTimes = [...state.Times];
 
@@ -78,8 +125,33 @@ const reducer = (state = initialState, action) => {
             }
         }
         if(action.timeOrDate === "Time"){
+
+            const newTimes = [...state.Times];
+
+            for (let i = 0; i <= 6; i++){
+                if(action.value === "Regular"){
+                    if(newTimes[i].id !== "-1"){
+                        newTimes[i].sleepTime = militaryToRegularHandler(newTimes[i].sleepTime);
+                        newTimes[i].wakeTime = militaryToRegularHandler(newTimes[i].wakeTime);
+                    }
+                    else{
+                        break;
+                    }
+                }
+                else if(action.value === "Military"){
+                    if(newTimes[i].id !== "-1"){
+                        newTimes[i].sleepTime = regularToMilitaryHandler(newTimes[i].sleepTime);
+                        newTimes[i].wakeTime = regularToMilitaryHandler(newTimes[i].wakeTime);
+                    }
+                    else{
+                        break;
+                    }
+                }
+            }
+            console.log(state);
             return {
                 ...state,
+                Times: newTimes,
                 timeSettings: action.value
             }
         }
