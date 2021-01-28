@@ -37,30 +37,34 @@ class Inputs extends Component {
     }
 
     checkValidInput = (event, time) => {
-        console.log(event);
-        if(event.target.value.length <= 5 && (/^[0-9\b]+$/.test(event.target.value) || event.target.value === "" || event.target.value[2] === ":")){
+        console.log(event.target.value[4])
+        if(event.target.value.length <= 5 
+            && (/^[0-9\b]+$/.test(event.target.value) 
+            || event.target.value === "" 
+            || (event.target.value[2] === ":" && (/^[0-9\b]+$/.test(event.target.value[4]) || event.target.value[4] === undefined)))){
             if(time === "wake"){
-                if(this.state.wakeTime.length === 1 && 
+                if(this.state.wakeTime.length === 2 && 
                     event.nativeEvent.inputType === "insertText"){
-                    this.setState({wakeTime: event.target.value + ":"})
+                    this.setState({wakeTime: event.target.value.slice(0,2) + ":" + event.target.value[2]})
                 }
-                else if(this.state.wakeTime.length === 3 && 
+                else if(this.state.wakeTime.length === 4 && 
                     event.nativeEvent.inputType === "deleteContentBackward"){
-                    this.setState({wakeTime: event.target.value.slice(0,1)})
+                    this.setState({wakeTime: event.target.value.slice(0,2)})
                 }
                 else{
                     this.setState({wakeTime: event.target.value})
                 }
 
             } 
+
             else{
-                if(this.state.sleepTime.length === 1 && 
+                if(this.state.sleepTime.length === 2 && 
                     event.nativeEvent.inputType === "insertText"){
-                    this.setState({sleepTime: event.target.value + ":"})
+                    this.setState({sleepTime: event.target.value.slice(0,2) + ":" + event.target.value[2]})
                 }
-                else if(this.state.sleepTime.length === 3 && 
+                else if(this.state.sleepTime.length === 4 && 
                     event.nativeEvent.inputType === "deleteContentBackward"){
-                    this.setState({sleepTime: event.target.value.slice(0,1)})
+                    this.setState({sleepTime: event.target.value.slice(0,2)})
                 }
                 else{
                     this.setState({sleepTime: event.target.value})
