@@ -14,8 +14,9 @@ class Inputs extends Component {
         sleepTime: "",
         wakeTime: "",
         button1: "AM",
-        button2: "PM",
-        colonChecker: false
+        button2: "AM",
+        colonChecker: false,
+        invalidInput: false
     }
 
     toggleButtonHandler = (value) => {
@@ -73,20 +74,57 @@ class Inputs extends Component {
         }
         
     }
+
+    convertTimeToNum = (time) => {
+        return {
+            hours: parseInt(time.slice(0,2)),
+            minute: parseInt(time.slice(3,5))
+        }
+    }
+
+    checkValidInput = () => {
+        if(this.state.sleepTime === "" || this.state.wakeTime.length === ""){
+            this.setState({invalidInput: true, sleepTime: "", wakeTime: "", colonChecker: false})
+            return 
+        }
+        else if(this.state.sleepTime.length !== 5 || this.state.wakeTime.length !== 5){
+            this.setState({invalidInput: true, sleepTime: "", wakeTime: "", colonChecker: false})
+            return
+        }
+        let sleepTimeValue = this.convertTimeToNum(this.state.sleepTime)
+        let wakeTimeValue = this.convertTimeToNum(this.state.wakeTime)
+        if(sleepTimeValue.minute >= 60 ||  wakeTimeValue.minute >= 60){
+            this.setState({invalidInput: true, sleepTime: "", wakeTime: "", colonChecker: false})
+            return
+        }
+        else if(this.props.timeSettings === "Military" && 
+        (sleepTimeValue.hours >= 24 ||  wakeTimeValue.hours >= 24)){
+            this.setState({invalidInput: true, sleepTime: "", wakeTime: "", colonChecker: false})
+            return
+        }
+        else if(this.props.timeSettings === "Regular" && 
+        ((sleepTimeValue.hours === 0 || sleepTimeValue.hours > 12) || 
+        (wakeTimeValue.hours === 0 || wakeTimeValue.hours > 12))){
+            this.setState({invalidInput: true, sleepTime: "", wakeTime: "", colonChecker: false})
+            return
+        }
+        else{ 
+            this.setState({invalidInput: false})
+            this.props.onAddTime(this.state);
+        }
+    }
+
     render(){
+        let invalidMessage = null;
+        if(this.state.invalidInput === true){
+            invalidMessage = <p style = {{color: 'red', fontWeight: 'bold'}}>Invalid Input: Please follow military or regular time depending on your settings.</p>
+        }
         return(
             <Container>
-                <h2>Today's Times</h2>
-                <br></br>
+                <h2>Today's Times:</h2>
+                {invalidMessage}
+                {this.state.invalidInput ? null : <br></br>}
                 <Row>
-                    <Col>
-                        Wakeup Time
-                        <InputGroup size = "lg">
-                            <FormControl value = {this.state.wakeTime} onChange = {event => this.checkValidInputAuto(event, "wake")} placeholder = "12:00" aria-label="Large" aria-describedby="inputGroup-sizing-sm" />
-                            <Button disabled = {this.props.timeSettings === "Military"} onClick = {() => this.toggleButtonHandler(1)}>{this.state.button1}</Button>
-                        </InputGroup>
-                    </Col>
-    
                     <Col>
                         Sleep Time
                         <InputGroup size = "lg">
@@ -94,11 +132,20 @@ class Inputs extends Component {
                             <DropdownMenu/>
                             <Button disabled = {this.props.timeSettings === "Military"} onClick = {() => this.toggleButtonHandler(2)}>{this.state.button2}</Button>
                         </InputGroup>
+                        
+                    </Col>
+    
+                    <Col>
+                        Wakeup Time
+                        <InputGroup size = "lg">
+                            <FormControl value = {this.state.wakeTime} onChange = {event => this.checkValidInputAuto(event, "wake")} placeholder = "12:00" aria-label="Large" aria-describedby="inputGroup-sizing-sm" />
+                            <Button disabled = {this.props.timeSettings === "Military"} onClick = {() => this.toggleButtonHandler(1)}>{this.state.button1}</Button>
+                        </InputGroup>
                     </Col>
                 </Row>
                 <br></br>
                 
-                <Button  onClick = {() => this.props.onAddTime(this.state)} className = {classes.Button}size = "lg" variant = "success">Save Times</Button>
+                <Button  onClick = {this.checkValidInput} className = {classes.Button}size = "lg" variant = "success">Save Times</Button>
                 <hr></hr>
     
             </Container>

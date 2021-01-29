@@ -8,9 +8,6 @@ import FormControl from 'react-bootstrap/FormControl'
 import {connect} from 'react-redux'
 import { Component } from 'react';
 class PrevInputs extends Component {
-    shouldComponentUpdate(nextProps, nextState) {
-        return nextProps.prevTimes[1] !== this.props.prevTimes[1]
-    }
     render(){
         return(
             <Container>
@@ -18,16 +15,17 @@ class PrevInputs extends Component {
                 <br></br>
                 <Row>
                     <Col>
-                        Wakeup Time
-                        <InputGroup size = "lg">
-                            <FormControl  disabled = {true} placeholder = {this.props.prevTimes[1].wakeTime} aria-label="Large" aria-describedby="inputGroup-sizing-sm" />
-                        </InputGroup>
-                    </Col>
-    
-                    <Col>
                         Sleep Time
                         <InputGroup size = "lg">
                             <FormControl  disabled = {true} placeholder = {this.props.prevTimes[1].sleepTime} aria-label="Large" aria-describedby="inputGroup-sizing-sm" />
+                        </InputGroup>
+                        
+                    </Col>
+    
+                    <Col>
+                        Wakeup Time
+                        <InputGroup size = "lg">
+                            <FormControl  disabled = {true} placeholder = {this.props.prevTimes[1].wakeTime} aria-label="Large" aria-describedby="inputGroup-sizing-sm" />
                         </InputGroup>
                     </Col>
                 </Row>

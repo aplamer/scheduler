@@ -50,8 +50,28 @@ const initialState = {
 
 const reducer = (state = initialState, action) => {
     
+const leadingZeroHandler = (time) => {
+    if(time < 10){
+        time = "000" + time.toString()
+    }
+    else if(time < 100){
+        time = "00" + time.toString()
+    }
+    else if(time < 1000){
+        time = "0" + time.toString()
+    }
+    else{
+        time = time.toString()
+    }
+    return time
+}
+
+const splittingTime = (time) => {
+    return time.slice(0,2) + time.slice(3,5)
+}
+
 const militaryToRegularHandler = (time) => {
-    let tempTimeValue = time.slice(0,2) + time.slice(3,5)
+    let tempTimeValue = splittingTime(time)
     let AMorPM = "AM"
 
     tempTimeValue = parseInt(tempTimeValue)
@@ -67,32 +87,24 @@ const militaryToRegularHandler = (time) => {
         tempTimeValue -= 1200
     }
     
-    if(tempTimeValue < 1000){
-        tempTimeValue = "0" + tempTimeValue.toString()
-    }
-    else{
-        tempTimeValue = tempTimeValue.toString()
-    }
+    tempTimeValue = leadingZeroHandler(tempTimeValue)
 
     return (tempTimeValue.slice(0,2) + ":" + tempTimeValue.slice(2,4) + AMorPM)
 }
 
 const regularToMilitaryHandler = (time) => {
-    let tempTimeValue = time.slice(0,2) + time.slice(3,5)
+    let tempTimeValue = splittingTime(time)
     let AMorPM = time.slice(5,7);
 
     tempTimeValue = parseInt(tempTimeValue)
 
-    if((AMorPM === "PM" && tempTimeValue < 1200) || (AMorPM === "AM" && tempTimeValue >= 1200)){
+    if((AMorPM === "PM" && tempTimeValue < 1200)){
         tempTimeValue += 1200
     }
-    
-    if(tempTimeValue < 1000){
-        tempTimeValue = "0" + tempTimeValue.toString()
+    else if ((AMorPM === "AM" && tempTimeValue >= 1200)){
+        tempTimeValue -= 1200
     }
-    else{
-        tempTimeValue = tempTimeValue.toString()
-    }
+    tempTimeValue = leadingZeroHandler(tempTimeValue)
     
     return tempTimeValue.slice(0,2) + ":" + tempTimeValue.slice(2,4)
 }
@@ -102,9 +114,17 @@ const regularToMilitaryHandler = (time) => {
 
         for (let i = 6; i >= 0; i--){
             if(i === 0){
-                const sleepTime = action.value.sleepTime;
-                const wakeTime = action.value.wakeTime;
+                let sleepTime = action.value.sleepTime;
+                let wakeTime = action.value.wakeTime;
                 const id = action.id
+
+                if(state.timeSettings === "Regular"){
+                    const sleepAMorPM = action.value.button2;
+                    const wakeAMorPM = action.value.button1;
+                    sleepTime = sleepTime + sleepAMorPM;
+                    wakeTime = wakeTime + wakeAMorPM;
+                }
+
                 newTimes[0] = {id, sleepTime, wakeTime}
             }
             else{
@@ -124,6 +144,7 @@ const regularToMilitaryHandler = (time) => {
                 dateSettings: action.value
             }
         }
+        
         if(action.timeOrDate === "Time"){
 
             const newTimes = [...state.Times];
@@ -131,8 +152,10 @@ const regularToMilitaryHandler = (time) => {
             for (let i = 0; i <= 6; i++){
                 if(action.value === "Regular"){
                     if(newTimes[i].id !== "-1"){
-                        newTimes[i].sleepTime = militaryToRegularHandler(newTimes[i].sleepTime);
-                        newTimes[i].wakeTime = militaryToRegularHandler(newTimes[i].wakeTime);
+                        newTimes[i] = {
+                            ...newTimes[i], 
+                            sleepTime: militaryToRegularHandler(newTimes[i].sleepTime), 
+                            wakeTime: militaryToRegularHandler(newTimes[i].wakeTime)}
                     }
                     else{
                         break;
@@ -140,15 +163,16 @@ const regularToMilitaryHandler = (time) => {
                 }
                 else if(action.value === "Military"){
                     if(newTimes[i].id !== "-1"){
-                        newTimes[i].sleepTime = regularToMilitaryHandler(newTimes[i].sleepTime);
-                        newTimes[i].wakeTime = regularToMilitaryHandler(newTimes[i].wakeTime);
+                        newTimes[i] = {
+                            ...newTimes[i], 
+                            sleepTime: regularToMilitaryHandler(newTimes[i].sleepTime), 
+                            wakeTime: regularToMilitaryHandler(newTimes[i].wakeTime)}
                     }
                     else{
                         break;
                     }
                 }
             }
-            console.log(state);
             return {
                 ...state,
                 Times: newTimes,
