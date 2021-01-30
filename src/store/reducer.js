@@ -1,7 +1,7 @@
 import * as actionTypes from './actions';
 
 const initialState = {
-    sleepScore: "100",
+    sleepScore: "N/A",
     timeSettings: "Regular",
     dateSettings: "MDY",
     Times: [
@@ -49,7 +49,7 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
-    
+
 const leadingZeroHandler = (time) => {
     if(time < 10){
         time = "000" + time.toString()
@@ -109,6 +109,90 @@ const regularToMilitaryHandler = (time) => {
     return tempTimeValue.slice(0,2) + ":" + tempTimeValue.slice(2,4)
 }
 
+const sleepHoursTotalAvg = newTimes => {
+    let tempNewTimes = [...newTimes]
+    let scores = []
+    for (let i = 0; i <= 6; i++){
+        if(tempNewTimes[i].id === "-1"){
+            break
+        }
+        let tempSleepTimeValue = null
+        let tempWakeTimeValue = null
+
+        if(state.timeSettings === "Regular"){
+            tempSleepTimeValue = regularToMilitaryHandler(tempNewTimes[i].sleepTime)
+            tempSleepTimeValue = splittingTime(tempSleepTimeValue)
+            tempSleepTimeValue = parseInt(tempSleepTimeValue)
+
+            tempWakeTimeValue = regularToMilitaryHandler(tempNewTimes[i].wakeTime)
+            tempWakeTimeValue = splittingTime(tempWakeTimeValue)
+            tempWakeTimeValue = parseInt(tempWakeTimeValue)
+
+        }
+        else{
+            tempSleepTimeValue = tempNewTimes[i].sleepTime
+            tempSleepTimeValue = splittingTime(tempSleepTimeValue)
+            tempSleepTimeValue = parseInt(tempSleepTimeValue)
+
+            tempWakeTimeValue = tempNewTimes[i].wakeTime
+            tempWakeTimeValue = splittingTime(tempWakeTimeValue)
+            tempWakeTimeValue = parseInt(tempWakeTimeValue)
+        }
+
+        let totalSleepHours = (tempSleepTimeValue - tempWakeTimeValue)/100;
+        
+        if(tempSleepTimeValue >= tempWakeTimeValue){
+            totalSleepHours = 24 - totalSleepHours
+        }
+        else{
+            totalSleepHours = totalSleepHours * -1
+        }
+        
+        if(totalSleepHours >= 7 && totalSleepHours <= 9){
+            scores.push(40)
+        }
+        else if ((totalSleepHours >= 5 && totalSleepHours < 7) || (totalSleepHours > 9 && totalSleepHours <= 11) ){
+            scores.push(20)
+        }
+        else if ((totalSleepHours >= 3 && totalSleepHours < 5) || (totalSleepHours > 11 && totalSleepHours <= 13) ){
+            scores.push(0)
+        }
+        else {
+            scores.push(-40)
+        }
+
+    }
+    
+    if(scores.length > 0){
+        
+        let totalScore = 0 
+        for(let i = 0; i < scores.length; i++){
+            totalScore += scores[i];
+        }
+        return totalScore/scores.length
+    }
+
+    else{
+        return 0
+    }
+
+}
+
+const sleepHoursConsistentAvg = newTimes => {
+    for (let i = 0; i <= 6; i++){
+        
+    }
+}
+const sleepTimeAvg = newTimes => {
+    for (let i = 0; i <= 6; i++){
+        
+    }
+}
+
+const calculateSleepScore = newTimes => {
+    return (sleepHoursTotalAvg(newTimes) + 0 + 0).toFixed(2).toString()
+}
+
     if(action.type === "ADD"){
         const newTimes = [...state.Times];
 
@@ -131,8 +215,10 @@ const regularToMilitaryHandler = (time) => {
                 newTimes[i] = {...newTimes[i-1]}
             }
         }
+        const newScore = calculateSleepScore(newTimes)
         return {
             ...state,
+            sleepScore: newScore,
             Times: newTimes
         }
     }
