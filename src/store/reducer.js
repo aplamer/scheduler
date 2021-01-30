@@ -203,18 +203,21 @@ const calculateSleepScore = newTimes => {
                 const id = action.id
 
                 if(state.timeSettings === "Regular"){
-                    const sleepAMorPM = action.value.button2;
-                    const wakeAMorPM = action.value.button1;
+                    const sleepAMorPM = action.value.button1;
+                    const wakeAMorPM = action.value.button2;
                     sleepTime = sleepTime + sleepAMorPM;
                     wakeTime = wakeTime + wakeAMorPM;
                 }
-
+                console.log(sleepTime)
+                console.log(wakeTime)
                 newTimes[0] = {id, sleepTime, wakeTime}
+                
             }
             else{
                 newTimes[i] = {...newTimes[i-1]}
             }
         }
+        
         const newScore = calculateSleepScore(newTimes)
         return {
             ...state,

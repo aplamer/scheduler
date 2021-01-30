@@ -5,74 +5,31 @@ import Row from 'react-bootstrap/Row'
 import {Button} from 'react-bootstrap'
 import classes from './Inputs.module.css'
 import {connect} from 'react-redux'
-
-import InputGroup from 'react-bootstrap/InputGroup'
-import FormControl from 'react-bootstrap/FormControl'
-import DropdownMenu from 'react-bootstrap/esm/DropdownMenu';
+import Input from './Input/Input'
 class Inputs extends Component {
     state = {
         sleepTime: "",
         wakeTime: "",
         button1: "AM",
         button2: "AM",
-        colonChecker: false,
         invalidInput: false
     }
-
-    toggleButtonHandler = (value) => {
-        if(value === 1){
-            if(this.state.button1 === "AM"){
-                this.setState({button1: "PM"})
-            }
-            else{
-                this.setState({button1: "AM"})
-            }
+    inputChangeHandler = (newTime, value) => {
+        if(value === "sleep"){
+            this.setState({sleepTime: newTime})
         }
-        else{
-            if(this.state.button2 === "AM"){
-                this.setState({button2: "PM"})
-            }
-            else{
-                this.setState({button2: "AM"})
-            }
+        else if(value === "wake"){
+            this.setState({wakeTime: newTime})
         }
     }
 
-    checkValidInputAuto = (event, time) => {
-        if(event.target.value.length <= 5 
-            && (/^[0-9\b]+$/.test(event.target.value) 
-            || event.target.value === "" 
-            || ((event.target.value[2] === ":" && this.state.colonChecker) && (/^[0-9\b]+$/.test(event.target.value[4]) || event.target.value[4] === undefined)))){
-            if(time === "wake"){
-                if(this.state.wakeTime.length === 2 && 
-                    event.nativeEvent.inputType === "insertText"){
-                    this.setState({wakeTime: event.target.value.slice(0,2) + ":" + event.target.value[2], colonChecker: true})
-                }
-                else if(this.state.wakeTime.length === 4 && 
-                    event.nativeEvent.inputType === "deleteContentBackward"){
-                    this.setState({wakeTime: event.target.value.slice(0,2), colonChecker: false})
-                }
-                else{
-                    this.setState({wakeTime: event.target.value})
-                }
-
-            } 
-
-            else{
-                if(this.state.sleepTime.length === 2 && 
-                    event.nativeEvent.inputType === "insertText"){
-                    this.setState({sleepTime: event.target.value.slice(0,2) + ":" + event.target.value[2], colonChecker: true})
-                }
-                else if(this.state.sleepTime.length === 4 && 
-                    event.nativeEvent.inputType === "deleteContentBackward"){
-                    this.setState({sleepTime: event.target.value.slice(0,2), colonChecker: false})
-                }
-                else{
-                    this.setState({sleepTime: event.target.value})
-                }
-            }
+    buttonChangeHandler = (newAMorPM, value) => {
+        if(value === "sleep"){
+            this.setState({button1: newAMorPM})
         }
-        
+        else if(value === "wake"){
+            this.setState({button2: newAMorPM})
+        }
     }
 
     convertTimeToNum = (time) => {
@@ -84,28 +41,28 @@ class Inputs extends Component {
 
     checkValidInput = () => {
         if(this.state.sleepTime === "" || this.state.wakeTime.length === ""){
-            this.setState({invalidInput: true, sleepTime: "", wakeTime: "", colonChecker: false})
+            this.setState({invalidInput: true})
             return 
         }
         else if(this.state.sleepTime.length !== 5 || this.state.wakeTime.length !== 5){
-            this.setState({invalidInput: true, sleepTime: "", wakeTime: "", colonChecker: false})
+            this.setState({invalidInput: true})
             return
         }
         let sleepTimeValue = this.convertTimeToNum(this.state.sleepTime)
         let wakeTimeValue = this.convertTimeToNum(this.state.wakeTime)
         if(sleepTimeValue.minute >= 60 ||  wakeTimeValue.minute >= 60){
-            this.setState({invalidInput: true, sleepTime: "", wakeTime: "", colonChecker: false})
+            this.setState({invalidInput: true})
             return
         }
         else if(this.props.timeSettings === "Military" && 
         (sleepTimeValue.hours >= 24 ||  wakeTimeValue.hours >= 24)){
-            this.setState({invalidInput: true, sleepTime: "", wakeTime: "", colonChecker: false})
+            this.setState({invalidInput: true})
             return
         }
         else if(this.props.timeSettings === "Regular" && 
         ((sleepTimeValue.hours === 0 || sleepTimeValue.hours > 12) || 
         (wakeTimeValue.hours === 0 || wakeTimeValue.hours > 12))){
-            this.setState({invalidInput: true, sleepTime: "", wakeTime: "", colonChecker: false})
+            this.setState({invalidInput: true})
             return
         }
         else{ 
@@ -127,20 +84,23 @@ class Inputs extends Component {
                 <Row>
                     <Col>
                         Sleep Time
-                        <InputGroup size = "lg">
-                            <FormControl value = {this.state.sleepTime} onChange = {event => this.checkValidInputAuto(event, "sleep")} placeholder = "12:00" aria-label="Large" aria-describedby="inputGroup-sizing-sm" />
-                            <DropdownMenu/>
-                            <Button disabled = {this.props.timeSettings === "Military"} onClick = {() => this.toggleButtonHandler(2)}>{this.state.button2}</Button>
-                        </InputGroup>
+                        <Input 
+                        inputHandler = {this.inputChangeHandler}
+                        buttonHandler = {this.buttonChangeHandler}
+                        value = "sleep" 
+                        time = {this.state.sleepTime} 
+                        settings = {this.props.timeSettings}/>
                         
                     </Col>
     
                     <Col>
                         Wakeup Time
-                        <InputGroup size = "lg">
-                            <FormControl value = {this.state.wakeTime} onChange = {event => this.checkValidInputAuto(event, "wake")} placeholder = "12:00" aria-label="Large" aria-describedby="inputGroup-sizing-sm" />
-                            <Button disabled = {this.props.timeSettings === "Military"} onClick = {() => this.toggleButtonHandler(1)}>{this.state.button1}</Button>
-                        </InputGroup>
+                        <Input 
+                        inputHandler = {this.inputChangeHandler}
+                        buttonHandler = {this.buttonChangeHandler}
+                        value = "wake" 
+                        time = {this.state.wakeTime} 
+                        settings = {this.props.timeSettings}/>
                     </Col>
                 </Row>
                 <br></br>
