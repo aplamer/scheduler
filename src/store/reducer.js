@@ -140,7 +140,20 @@ const stdScorer = std => {
     }
 }
 
+const average = scores => {
+    if(scores.length > 0){
+        
+        let totalScore = 0 
+        for(let i = 0; i < scores.length; i++){
+            totalScore += scores[i];
+        }
+        return totalScore/scores.length
+    }
 
+    else{
+        return 0
+    }
+}
 const sleepHoursTotalAvg = newTimes => {
     let tempNewTimes = [...newTimes]
     let scores = []
@@ -175,23 +188,13 @@ const sleepHoursTotalAvg = newTimes => {
 
     }
     
-    if(scores.length > 0){
-        
-        let totalScore = 0 
-        for(let i = 0; i < scores.length; i++){
-            totalScore += scores[i];
-        }
-        return totalScore/scores.length
-    }
-
-    else{
-        return 0
-    }
+    return average(scores)
 
 }
 
 const sleepHoursConsistentAvg = newTimes => {
     let tempNewTimes = [...newTimes]
+    let scores = []
     let sleepTimes = []
     let wakeTimes = []
     for (let i = 0; i <= 6; i++){
@@ -203,15 +206,14 @@ const sleepHoursConsistentAvg = newTimes => {
 
         sleepTimes.push(tempSleepTimeValue/100)
         wakeTimes.push(tempWakeTimeValue/100)
+        scores.push(stdScorer(std(sleepTimes)) + stdScorer(std(wakeTimes)))
     }
-
-    let stdSleepScore = stdScorer(std(sleepTimes))
-    let stdWakeScore = stdScorer(std(wakeTimes))
-    return stdWakeScore+stdSleepScore
+    return average(scores)
 
 }
 const sleepTimeAvg = newTimes => {
     let tempNewTimes = [...newTimes]
+    let scores = []
     let sleepHours = []
     for (let i = 0; i <= 6; i++){
         if(tempNewTimes[i].id === "-1"){
@@ -229,8 +231,10 @@ const sleepTimeAvg = newTimes => {
             totalSleepHours = totalSleepHours * -1
         }
         sleepHours.push(totalSleepHours)
+        scores.push(stdScorer(std(sleepHours)))
     }
-    return stdScorer(std(sleepHours))
+
+    return average(scores)
 
 }
 
