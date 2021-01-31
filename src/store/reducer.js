@@ -1,5 +1,5 @@
 import * as actionTypes from './actions';
-
+import {std} from 'mathjs'
 const initialState = {
     sleepScore: "N/A",
     timeSettings: "Regular",
@@ -109,6 +109,38 @@ const regularToMilitaryHandler = (time) => {
     return tempTimeValue.slice(0,2) + ":" + tempTimeValue.slice(2,4)
 }
 
+
+const timeToNumberHelper = time => {
+    let retTime = null
+    if(state.timeSettings === "Regular"){
+        retTime = regularToMilitaryHandler(time)
+        retTime = splittingTime(retTime)
+        retTime = parseInt(retTime)
+    }
+    else{
+        retTime = time
+        retTime = splittingTime(retTime)
+        retTime = parseInt(retTime)
+    }
+    return retTime;
+}
+
+const stdScorer = std => {
+    if(std < 1){
+        return 20
+    }
+    else if (std < 2){
+        return 10
+    }
+    else if (std < 3){
+        return 5
+    }
+    else{
+        return 0
+    }
+}
+
+
 const sleepHoursTotalAvg = newTimes => {
     let tempNewTimes = [...newTimes]
     let scores = []
@@ -116,28 +148,8 @@ const sleepHoursTotalAvg = newTimes => {
         if(tempNewTimes[i].id === "-1"){
             break
         }
-        let tempSleepTimeValue = null
-        let tempWakeTimeValue = null
-
-        if(state.timeSettings === "Regular"){
-            tempSleepTimeValue = regularToMilitaryHandler(tempNewTimes[i].sleepTime)
-            tempSleepTimeValue = splittingTime(tempSleepTimeValue)
-            tempSleepTimeValue = parseInt(tempSleepTimeValue)
-
-            tempWakeTimeValue = regularToMilitaryHandler(tempNewTimes[i].wakeTime)
-            tempWakeTimeValue = splittingTime(tempWakeTimeValue)
-            tempWakeTimeValue = parseInt(tempWakeTimeValue)
-
-        }
-        else{
-            tempSleepTimeValue = tempNewTimes[i].sleepTime
-            tempSleepTimeValue = splittingTime(tempSleepTimeValue)
-            tempSleepTimeValue = parseInt(tempSleepTimeValue)
-
-            tempWakeTimeValue = tempNewTimes[i].wakeTime
-            tempWakeTimeValue = splittingTime(tempWakeTimeValue)
-            tempWakeTimeValue = parseInt(tempWakeTimeValue)
-        }
+        let tempSleepTimeValue = timeToNumberHelper(tempNewTimes[i].sleepTime)
+        let tempWakeTimeValue = timeToNumberHelper(tempNewTimes[i].wakeTime)
 
         let totalSleepHours = (tempSleepTimeValue - tempWakeTimeValue)/100;
         
@@ -179,18 +191,47 @@ const sleepHoursTotalAvg = newTimes => {
 }
 
 const sleepHoursConsistentAvg = newTimes => {
+    let tempNewTimes = [...newTimes]
+    let sleepTimes = []
+    let wakeTimes = []
     for (let i = 0; i <= 6; i++){
-        
+        if(tempNewTimes[i].id === "-1"){
+            break
+        }
+        let tempSleepTimeValue = timeToNumberHelper(tempNewTimes[i].sleepTime)
+        let tempWakeTimeValue = timeToNumberHelper(tempNewTimes[i].wakeTime)
+
+        sleepTimes.push(tempSleepTimeValue/100)
+        wakeTimes.push(tempWakeTimeValue/100)
     }
+
+    let stdSleepScore = stdScorer(std(sleepTimes))
+    let stdWakeScore = stdScorer(std(wakeTimes))
+    return stdWakeScore+stdSleepScore
+
 }
 const sleepTimeAvg = newTimes => {
+    let tempNewTimes = [...newTimes]
+    let sleepHours = []
     for (let i = 0; i <= 6; i++){
-        
-    }
-}
+        if(tempNewTimes[i].id === "-1"){
+            break
+        }
+        let tempSleepTimeValue = timeToNumberHelper(tempNewTimes[i].sleepTime)
+        let tempWakeTimeValue = timeToNumberHelper(tempNewTimes[i].wakeTime)
 
-const calculateSleepScore = newTimes => {
-    return (sleepHoursTotalAvg(newTimes) + 0 + 0).toFixed(2).toString()
+        let totalSleepHours = (tempSleepTimeValue - tempWakeTimeValue)/100;
+        
+        if(tempSleepTimeValue >= tempWakeTimeValue){
+            totalSleepHours = 24 - totalSleepHours
+        }
+        else{
+            totalSleepHours = totalSleepHours * -1
+        }
+        sleepHours.push(totalSleepHours)
+    }
+    return stdScorer(std(sleepHours))
+
 }
 
     if(action.type === "ADD"){
@@ -217,11 +258,12 @@ const calculateSleepScore = newTimes => {
                 newTimes[i] = {...newTimes[i-1]}
             }
         }
+
+        // console.log(sleepHoursTotalAvg(newTimes), sleepHoursConsistentAvg(newTimes), sleepTimeAvg(newTimes))
         
-        const newScore = calculateSleepScore(newTimes)
         return {
             ...state,
-            sleepScore: newScore,
+            sleepScore: (sleepHoursTotalAvg(newTimes) + sleepHoursConsistentAvg(newTimes) + sleepTimeAvg(newTimes)).toFixed(2).toString(),
             Times: newTimes
         }
     }

@@ -89,7 +89,8 @@ class Inputs extends Component {
                         buttonHandler = {this.buttonChangeHandler}
                         value = "sleep" 
                         time = {this.state.sleepTime} 
-                        settings = {this.props.timeSettings}/>
+                        settings = {this.props.timeSettings}
+                        button = {this.state.button1}/>
                         
                     </Col>
     
@@ -100,7 +101,8 @@ class Inputs extends Component {
                         buttonHandler = {this.buttonChangeHandler}
                         value = "wake" 
                         time = {this.state.wakeTime} 
-                        settings = {this.props.timeSettings}/>
+                        settings = {this.props.timeSettings}
+                        button = {this.state.button2}/>
                     </Col>
                 </Row>
                 <br></br>

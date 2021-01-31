@@ -10,12 +10,10 @@ class Input extends Component {
     }
 
     toggleButtonHandler = () => {
-        if(this.state.button === "AM"){
-            this.setState({button: "PM"})
+        if(this.props.button === "AM"){
             this.props.buttonHandler("PM", this.props.value)
         }
         else{
-            this.setState({button: "AM"})
             this.props.buttonHandler("AM", this.props.value)
         }
     }
@@ -45,7 +43,7 @@ class Input extends Component {
         return (
             <InputGroup size = "lg">
                 <FormControl value = {this.props.time} onChange = {event => this.checkValidInputAuto(event)} placeholder = "12:00" aria-label="Large" aria-describedby="inputGroup-sizing-sm" />
-                <Button disabled = {this.props.settings === "Military"} onClick = {this.toggleButtonHandler}>{this.state.button}</Button>
+                <Button disabled = {this.props.settings === "Military"} onClick = {this.toggleButtonHandler}>{this.props.button}</Button>
             </InputGroup>
         )
     }
