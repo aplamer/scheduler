@@ -7,6 +7,7 @@ class Score extends Component {
     render(){
         return(
             <Container>
+                <Col className = {classes.scoreText}>Sleep Score</Col>
                 <Col className = {classes.scoreImg}>{this.props.score}</Col>
             </Container>
         )

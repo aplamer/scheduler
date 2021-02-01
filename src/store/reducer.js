@@ -83,8 +83,8 @@ const militaryToRegularHandler = (time) => {
         AMorPM = "PM"
         tempTimeValue -= 1200
     }
-    else if (tempTimeValue >= 2400){
-        tempTimeValue -= 1200
+    else if (tempTimeValue >= 0 && tempTimeValue < 100){
+        tempTimeValue += 1200
     }
     
     tempTimeValue = leadingZeroHandler(tempTimeValue)

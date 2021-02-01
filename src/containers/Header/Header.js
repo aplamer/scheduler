@@ -5,8 +5,9 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import classes from './Header.module.css'
 import icon from '../../assets/placeholder.png'
-import Modal from '../UI/Modal/Modal'
+import Modal from '../../components/UI/Modal/Modal'
 import { Component } from 'react'
+import {Link} from 'react-router-dom'
 class Header extends Component {
     state = {
         loggingIn: false
@@ -26,9 +27,9 @@ class Header extends Component {
                 <Navbar bg="light" variant="light" className = "py-3">
                     <img src = {icon} alt = "Null" className = {classes.navImage}></img>
                     <Nav variant = "pills" className="mr-auto">
-                    <Nav.Link href="#" className = {classes.navLink}>Home</Nav.Link>
-                    <Nav.Link href="#" className = {classes.navLink}>History</Nav.Link>
-                    <Nav.Link href="#" className = {classes.navLink}>About</Nav.Link>
+                        <Link to="/" className = {classes.navLink}>Home</Link>
+                        <Link to="/history" className = {classes.navLink}>History</Link>
+                        <Link to="/about" className = {classes.navLink}>About</Link>
                     </Nav>
                     <Form inline>
                     <Button variant="outline-primary" className = {classes.signIn} onClick = {() => this.setState({loggingIn: true})}>Login</Button>
