@@ -30,6 +30,7 @@ class Header extends Component {
                         <Link to="/" className = {classes.navLink}>Home</Link>
                         <Link to="/history" className = {classes.navLink}>History</Link>
                         <Link to="/about" className = {classes.navLink}>About</Link>
+                        <Link to="/settings" className = {classes.navLink}>Settings</Link>
                     </Nav>
                     <Form inline>
                     <Button variant="outline-primary" className = {classes.signIn} onClick = {() => this.setState({loggingIn: true})}>Login</Button>

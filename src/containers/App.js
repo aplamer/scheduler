@@ -1,11 +1,12 @@
 
 import React, {Component} from 'react'
 import Header from './Header/Header'
-import TimeOptions from './TimeOptions/TimeOptions'
+import CurrentTime from './CurrentTime/CurrentTime'
 import {BrowserRouter, Route} from 'react-router-dom'
 import Home from '../containers/Home/Home'
 import History from '../containers/History/History'
 import About from '../containers/About/About'
+import Settings from '../containers/Settings/Settings'
 class App extends Component{
     
     render(){
@@ -14,13 +15,14 @@ class App extends Component{
                     <Header></Header>
                     <br></br>
                     <br></br>
-                    <TimeOptions></TimeOptions>
+                    <CurrentTime></CurrentTime>
                     <br></br>
                     <br></br>
                     <br></br>
                     <Route path = "/" exact component = {Home}/>
                     <Route path = "/history" component = {History}/>
                     <Route path = "/about" component = {About}/>
+                    <Route path = "/settings" component = {Settings}/>
             </BrowserRouter>
         )
     }

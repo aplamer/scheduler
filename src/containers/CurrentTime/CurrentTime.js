@@ -1,9 +1,6 @@
 import React, {Component} from 'react'
 import Time from '../../components/Time/Time'
 import Container from 'react-bootstrap/Container'
-import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
-import classes from './TimeOptions.module.css'
 import {connect} from 'react-redux'
 class TimeOptions extends Component{
     constructor(){
@@ -121,33 +118,8 @@ class TimeOptions extends Component{
         }
         
         return(
-            <Container>
-                <Row>
-                    <Col>
-                    Time and Date Settings
-                    </Col>
-                    
-                </Row>
-                <Row>
-                    <Col>  
-                    <select value = {this.props.dateType} className = {classes.dropdownOption} onChange = {(event) => this.props.onChangeSettings(event, "Date")}>
-                        <option value="MDY">MDY</option>
-                        <option value="DMY">DMY</option>
-                        <option value="YMD">YMD</option>
-                    </select>
-            
-                    <select value = {this.props.timeType} className = {classes.dropdownOption}  onChange = {(event) => this.props.onChangeSettings(event, "Time")}>
-                        <option value="Regular">Regular</option>
-                        <option value="Military">Military</option>
-                    </select>
-                    </Col>
-
-                    <Col>
-                    
+            <Container style = {{textAlign: "center"}}>
                     {fullDate}
-                    </Col>
-                </Row>
-                
             </Container>
             
         )
@@ -161,9 +133,4 @@ const mapStateToProps = state =>{
     }
 }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        onChangeSettings: (data, changing) => dispatch({type: "CHANGE_SETTINGS", value: data.target.value, timeOrDate: changing}),
-    }
-}
-export default connect(mapStateToProps, mapDispatchToProps)(TimeOptions);
+export default connect(mapStateToProps)(TimeOptions)

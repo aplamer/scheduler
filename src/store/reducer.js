@@ -8,37 +8,44 @@ const initialState = {
         {
             id: "-1",
             sleepTime: "N/A",
-            wakeTime: "N/A"
+            wakeTime: "N/A",
+            totalHours: "N/A"
         },
         {
             id: "-1",
             sleepTime: "N/A",
-            wakeTime: "N/A"
+            wakeTime: "N/A",
+            totalHours: "N/A"
         },
         {
             id: "-1",
             sleepTime: "N/A",
-            wakeTime: "N/A"
+            wakeTime: "N/A",
+            totalHours: "N/A"
         },
         {
             id: "-1",
             sleepTime: "N/A",
-            wakeTime: "N/A"
+            wakeTime: "N/A",
+            totalHours: "N/A"
         },
         {
             id: "-1",
             sleepTime: "N/A",
-            wakeTime: "N/A"
+            wakeTime: "N/A",
+            totalHours: "N/A"
         },
         {
             id: "-1",
             sleepTime: "N/A",
-            wakeTime: "N/A"
+            wakeTime: "N/A",
+            totalHours: "N/A"
         },
         {
             id: "-1",
             sleepTime: "N/A",
-            wakeTime: "N/A"
+            wakeTime: "N/A",
+            totalHours: "N/A"
         }
     ]
     /*sleepTime is an array filled with objects
@@ -154,6 +161,20 @@ const average = scores => {
         return 0
     }
 }
+
+const totalHoursHelper = (sleepTime, wakeTime) => {
+    let totalSleepHours = (sleepTime - wakeTime)/100;
+        
+        if(sleepTime >= wakeTime){
+            totalSleepHours = 24 - totalSleepHours
+        }
+        else{
+            totalSleepHours = totalSleepHours * -1
+        }
+
+        return totalSleepHours
+}
+
 const sleepHoursTotalAvg = newTimes => {
     let tempNewTimes = [...newTimes]
     let scores = []
@@ -164,15 +185,7 @@ const sleepHoursTotalAvg = newTimes => {
         let tempSleepTimeValue = timeToNumberHelper(tempNewTimes[i].sleepTime)
         let tempWakeTimeValue = timeToNumberHelper(tempNewTimes[i].wakeTime)
 
-        let totalSleepHours = (tempSleepTimeValue - tempWakeTimeValue)/100;
-        
-        if(tempSleepTimeValue >= tempWakeTimeValue){
-            totalSleepHours = 24 - totalSleepHours
-        }
-        else{
-            totalSleepHours = totalSleepHours * -1
-        }
-        
+        let totalSleepHours = totalHoursHelper(tempSleepTimeValue, tempWakeTimeValue)
         if(totalSleepHours >= 7 && totalSleepHours <= 9){
             scores.push(40)
         }
@@ -222,14 +235,8 @@ const sleepTimeAvg = newTimes => {
         let tempSleepTimeValue = timeToNumberHelper(tempNewTimes[i].sleepTime)
         let tempWakeTimeValue = timeToNumberHelper(tempNewTimes[i].wakeTime)
 
-        let totalSleepHours = (tempSleepTimeValue - tempWakeTimeValue)/100;
-        
-        if(tempSleepTimeValue >= tempWakeTimeValue){
-            totalSleepHours = 24 - totalSleepHours
-        }
-        else{
-            totalSleepHours = totalSleepHours * -1
-        }
+        let totalSleepHours = totalHoursHelper(tempSleepTimeValue, tempWakeTimeValue)
+
         sleepHours.push(totalSleepHours)
         scores.push(stdScorer(std(sleepHours)))
     }
@@ -253,9 +260,9 @@ const sleepTimeAvg = newTimes => {
                     sleepTime = sleepTime + sleepAMorPM;
                     wakeTime = wakeTime + wakeAMorPM;
                 }
-                console.log(sleepTime)
-                console.log(wakeTime)
-                newTimes[0] = {id, sleepTime, wakeTime}
+                const totalHoursValue = totalHoursHelper(timeToNumberHelper(sleepTime), timeToNumberHelper(wakeTime)).toString()
+                
+                newTimes[0] = {id: id, sleepTime: sleepTime, wakeTime: wakeTime, totalHours: totalHoursValue}
                 
             }
             else{
@@ -264,7 +271,6 @@ const sleepTimeAvg = newTimes => {
         }
 
         // console.log(sleepHoursTotalAvg(newTimes), sleepHoursConsistentAvg(newTimes), sleepTimeAvg(newTimes))
-        
         return {
             ...state,
             sleepScore: (sleepHoursTotalAvg(newTimes) + sleepHoursConsistentAvg(newTimes) + sleepTimeAvg(newTimes)).toFixed(2).toString(),

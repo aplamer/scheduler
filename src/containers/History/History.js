@@ -6,6 +6,7 @@ import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
 import Aux from '../../hoc/Auxiliary/Auxiliary'
 class History extends Component {
+
     render(){
         let timesReturn = null
         if(this.props.times[0].id === "-1"){
@@ -42,6 +43,13 @@ class History extends Component {
                                     </div>
                                     {timeElement.wakeTime}
                                     </Col>
+
+                                    <Col>
+                                    <div style = {{color: "#007bff"}}>
+                                        Total Hours:
+                                    </div>
+                                    {timeElement.totalHours}
+                                    </Col>
                                 </Row>
                                 <hr></hr>
                             </Aux>
@@ -62,7 +70,7 @@ class History extends Component {
 
 const mapStateToProps = state => {
     return {
-        times: state.Times,
+        times: state.Times
     }
 }
 
