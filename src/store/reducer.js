@@ -1,4 +1,4 @@
-import * as actionTypes from './actions';
+import axios from 'axios'
 import {std} from 'mathjs'
 const initialState = {
     sleepScore: "N/A",
@@ -278,6 +278,14 @@ const sleepTimeAvg = newTimes => {
         }
     }
 
+    const authFail = (error) => {
+
+    }
+
+    const authSuccess = (data) => {
+        
+    }
+
     if(action.type === "CHANGE_SETTINGS"){
         if(action.timeOrDate === "Date"){
             return {
@@ -320,6 +328,42 @@ const sleepTimeAvg = newTimes => {
                 timeSettings: action.value
             }
         }
+    }
+
+    if(action.type === "AUTH_SIGNUP"){
+        const authData = {
+            email: action.email,
+            password: action.password,
+            returnSecureToken: true
+        }
+        axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCeXzqMKfL2wtLddwTGxR2xjBpXjfRXfc0", authData)
+        .then(response => {
+            console.log(response)
+            authSuccess(response.data);
+        })
+        .catch(err => {
+            console.log(err);
+            authFail(err)
+        })
+        return state;
+    }
+
+    if(action.type === "AUTH_LOGIN"){
+        const authData = {
+            email: action.email,
+            password: action.password,
+            returnSecureToken: true
+        }
+        axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCeXzqMKfL2wtLddwTGxR2xjBpXjfRXfc0", authData)
+        .then(response => {
+            console.log(response)
+            authSuccess(response.data);
+        })
+        .catch(err => {
+            console.log(err);
+            authFail(err)
+        })
+        return state;
     }
     return state;
 };

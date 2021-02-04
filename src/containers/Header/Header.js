@@ -5,7 +5,7 @@ import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import classes from './Header.module.css'
 import icon from '../../assets/placeholder.png'
-import Modal from '../../components/UI/Modal/Modal'
+import Login from '../Login/Login'
 import { Component } from 'react'
 import {Link} from 'react-router-dom'
 class Header extends Component {
@@ -20,7 +20,7 @@ class Header extends Component {
     
     render(){
 
-        let modal = this.state.loggingIn ? <Modal show = {this.state.loggingIn} modalClose = {this.loginToggler}/> : null
+        let modal = this.state.loggingIn ? <Login show = {this.state.loggingIn} modalClose = {this.loginToggler}/> : null
 
         return(
             <div>
@@ -33,7 +33,7 @@ class Header extends Component {
                         <Link to="/settings" className = {classes.navLink}>Settings</Link>
                     </Nav>
                     <Form inline>
-                    <Button variant="outline-primary" className = {classes.signIn} onClick = {() => this.setState({loggingIn: true})}>Login</Button>
+                    <Button variant="outline-primary" className = {classes.signIn} onClick = {() => this.setState({loggingIn: true})}>Log In</Button>
                     </Form>
                 </Navbar>
                 {modal}
