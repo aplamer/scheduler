@@ -1,18 +1,18 @@
 
 import React, {Component} from 'react'
-import Header from './Header/Header'
-import CurrentTime from './CurrentTime/CurrentTime'
 import {BrowserRouter, Route} from 'react-router-dom'
 import Home from '../containers/Home/Home'
 import History from '../containers/History/History'
 import About from '../containers/About/About'
 import Settings from '../containers/Settings/Settings'
+import Header from '../containers/Header/Header'
+import CurrentTime from '../containers/CurrentTime/CurrentTime'
 class App extends Component{
     
     render(){
         return(
             <BrowserRouter>
-                    <Header></Header>
+                    <Route path = "" component = {Header}/>
                     <br></br>
                     <br></br>
                     <CurrentTime></CurrentTime>

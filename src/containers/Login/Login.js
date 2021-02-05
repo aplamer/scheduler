@@ -49,7 +49,6 @@ class Login extends Component {
             }
         }
     }
-
     auth = (event) => {
         event.preventDefault()
         const authData = {
@@ -64,6 +63,7 @@ class Login extends Component {
         axios.post(urlString, authData)
         .then(response => {
             this.props.authSuccess(response);
+            this.props.modalClose();
         })
         .catch(err => {
             this.props.authFail(err);
@@ -155,7 +155,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         authFail: (error) => dispatch({type: "AUTH_FAIL", error: error}),
-        authSuccess: (response) => dispatch({type: "AUTH_SUCCESS", response: response})
+        authSuccess: (response) => dispatch({type: "AUTH_SUCCESS", response: response}),
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Login)

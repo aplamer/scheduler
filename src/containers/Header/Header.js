@@ -8,6 +8,7 @@ import icon from '../../assets/placeholder.png'
 import Login from '../Login/Login'
 import { Component } from 'react'
 import {Link} from 'react-router-dom'
+import {connect} from 'react-redux'
 class Header extends Component {
     state = {
         loggingIn: false
@@ -18,10 +19,21 @@ class Header extends Component {
         this.setState({loggingIn: false})
     }
     
+    logoutHelper = () => {
+        this.props.logOut();
+        this.props.history.push('/')
+        
+    }
     render(){
 
         let modal = this.state.loggingIn ? <Login show = {this.state.loggingIn} modalClose = {this.loginToggler}/> : null
-
+        let authButton = null
+        if(this.props.token){
+            authButton = <Button variant="outline-primary" className = {classes.signIn} onClick = {this.logoutHelper}>Log out</Button>
+        }
+        else{
+            authButton = <Button variant="outline-primary" className = {classes.signIn} onClick = {() => this.setState({loggingIn: true})}>Log In</Button>
+        }
         return(
             <div>
                 <Navbar bg="light" variant="light" className = "py-3">
@@ -33,7 +45,7 @@ class Header extends Component {
                         <Link to="/settings" className = {classes.navLink}>Settings</Link>
                     </Nav>
                     <Form inline>
-                    <Button variant="outline-primary" className = {classes.signIn} onClick = {() => this.setState({loggingIn: true})}>Log In</Button>
+                    {authButton}
                     </Form>
                 </Navbar>
                 {modal}
@@ -42,5 +54,14 @@ class Header extends Component {
         )
     }
 }
-
-export default Header
+const mapStateToProps = state => {
+    return {
+        token: state.token
+    }
+}
+const mapDispatchToProps = dispatch => {
+    return {
+        logOut: () => dispatch({type: "LOGOUT"})
+    };
+};
+export default connect(mapStateToProps, mapDispatchToProps)(Header)

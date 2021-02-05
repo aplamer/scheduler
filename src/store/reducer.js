@@ -249,6 +249,9 @@ const sleepTimeAvg = newTimes => {
 
 }
 
+const synchState = () => {
+
+}
 
 switch(action.type){
     case "ADD":
@@ -339,6 +342,10 @@ switch(action.type){
             token: action.response.data.idToken,
             userId: action.response.data.localId,
             error: null
+        }
+    case "LOGOUT":
+        return {
+            ...initialState
         }
     default:
         return state
