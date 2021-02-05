@@ -23,17 +23,5 @@
     background-color: white;
     color: blue;
     border: none;
-    margin-top: 10px;
-}
-.Link:hover{
-    background-color: white;
-    color: blue;
-    border: none;
-    text-decoration: underline;
-}
-
-.Link:focus{
-    background-color: white;
-    color: blue;
-    border: none;
+    margin-top: 20px;
 }

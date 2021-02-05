@@ -7,7 +7,7 @@ import classes from './Login.module.css'
 import { Component } from 'react'
 import Aux from '../../hoc/Auxiliary/Auxiliary'
 import {connect} from 'react-redux'
-
+import axios from 'axios'
 class Login extends Component {
     state = {
         validEmail: false,
@@ -50,22 +50,33 @@ class Login extends Component {
         }
     }
 
-    onSignUpHandler = event => {
-        event.preventDefault();
-        this.props.onAuthSignup(this.state.Email, this.state.password)
+    auth = (event) => {
+        event.preventDefault()
+        const authData = {
+            email: this.state.Email,
+            password: this.state.password,
+            returnSecureToken: true
+        }
+        let urlString = "https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCeXzqMKfL2wtLddwTGxR2xjBpXjfRXfc0"
+        if(this.state.signingUp){
+            urlString = "https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCeXzqMKfL2wtLddwTGxR2xjBpXjfRXfc0"
+        }
+        axios.post(urlString, authData)
+        .then(response => {
+            this.props.authSuccess(response);
+        })
+        .catch(err => {
+            this.props.authFail(err);
+        })
     }
 
-    onLoginHandler = event => {
-        event.preventDefault();
-        this.props.onAuthLogin(this.state.Email, this.state.password)
-    }
     render(){
         let button = null
         if(this.state.signingUp){
             button = 
             <Aux>
                 <Button 
-                    onClick = {(event) => this.onSignUpHandler(event)} 
+                    onClick = {(event) => this.auth(event)} 
                     className = {classes.Button} 
                     disabled = {!this.state.validPassword || !this.state.validEmail}>
                         Sign Up  
@@ -82,7 +93,7 @@ class Login extends Component {
             button = 
             <Aux>
                 <Button 
-                    onClick = {(event) => this.onLoginHandler(event)} 
+                    onClick = {(event) => this.auth(event)} 
                     className = {classes.Button} 
                     disabled = {!this.state.validPassword || !this.state.validEmail}>
                         Log In 
@@ -95,9 +106,15 @@ class Login extends Component {
                 </Button>
             </Aux>
         }
+
+        let errorMessage = null;
+        if(this.props.error){
+            errorMessage = <p>{this.props.error.message}</p>
+        }
         return (
             <Aux>
                 <div className = {classes.Modal}>
+                        {errorMessage}
                         <div style = {{float: "left"}}>Email:</div>
                         <InputGroup size = "lg">
                             <FormControl  
@@ -130,11 +147,15 @@ class Login extends Component {
     }
 }
 
-
+const mapStateToProps = state => {
+    return {
+        error: state.error
+    }
+}
 const mapDispatchToProps = dispatch => {
     return {
-        onAuthSignUp: (email, password) => dispatch({type: "AUTH_SIGNUP", email: email, password: password}),
-        onAuthLogin: (email, password) => dispatch({type: "AUTH_LOGIN", email: email, password: password})
+        authFail: (error) => dispatch({type: "AUTH_FAIL", error: error}),
+        authSuccess: (response) => dispatch({type: "AUTH_SUCCESS", response: response})
     };
 };
-export default connect(null, mapDispatchToProps)(Login)
+export default connect(mapStateToProps, mapDispatchToProps)(Login)

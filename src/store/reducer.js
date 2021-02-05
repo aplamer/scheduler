@@ -1,4 +1,4 @@
-import axios from 'axios'
+
 import {std} from 'mathjs'
 const initialState = {
     sleepScore: "N/A",
@@ -53,6 +53,10 @@ const initialState = {
     a sleeptime, and a wakeup time. The Times array only stores up to a week worths of data and slots in
     the latest date into the 0 index (and the last date in the 7th index assuming the array is full).
     */
+   ,
+   token: null,
+   userId: null,
+   error: null
 };
 
 const reducer = (state = initialState, action) => {
@@ -245,6 +249,7 @@ const sleepTimeAvg = newTimes => {
 
 }
 
+
     if(action.type === "ADD"){
         const newTimes = [...state.Times];
 
@@ -276,14 +281,6 @@ const sleepTimeAvg = newTimes => {
             sleepScore: (sleepHoursTotalAvg(newTimes) + sleepHoursConsistentAvg(newTimes) + sleepTimeAvg(newTimes)).toFixed(2).toString(),
             Times: newTimes
         }
-    }
-
-    const authFail = (error) => {
-
-    }
-
-    const authSuccess = (data) => {
-        
     }
 
     if(action.type === "CHANGE_SETTINGS"){
@@ -330,41 +327,22 @@ const sleepTimeAvg = newTimes => {
         }
     }
 
-    if(action.type === "AUTH_SIGNUP"){
-        const authData = {
-            email: action.email,
-            password: action.password,
-            returnSecureToken: true
+    if(action.type === "AUTH_FAIL"){
+        return {
+            ...state,
+            error: action.error.response.data.error
         }
-        axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyCeXzqMKfL2wtLddwTGxR2xjBpXjfRXfc0", authData)
-        .then(response => {
-            console.log(response)
-            authSuccess(response.data);
-        })
-        .catch(err => {
-            console.log(err);
-            authFail(err)
-        })
-        return state;
     }
 
-    if(action.type === "AUTH_LOGIN"){
-        const authData = {
-            email: action.email,
-            password: action.password,
-            returnSecureToken: true
+    if(action.type === "AUTH_SUCCESS"){
+        return {
+            ...state, 
+            token: action.response.data.idToken,
+            userId: action.response.data.localId,
+            error: null
         }
-        axios.post("https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyCeXzqMKfL2wtLddwTGxR2xjBpXjfRXfc0", authData)
-        .then(response => {
-            console.log(response)
-            authSuccess(response.data);
-        })
-        .catch(err => {
-            console.log(err);
-            authFail(err)
-        })
-        return state;
     }
+
     return state;
 };
 
