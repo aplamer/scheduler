@@ -12,7 +12,7 @@ class Login extends Component {
     state = {
         validEmail: false,
         validPassword: false,
-        Email: "",
+        email: "",
         password: "",
         signingUp: false
     }
@@ -42,7 +42,7 @@ class Login extends Component {
         }
         else {
             if(type === "Email"){
-                this.setState({Email: event.target.value, validEmail: true})
+                this.setState({email: event.target.value, validEmail: true})
             }
             if(type === "Password"){
                 this.setState({password: event.target.value, validPassword: true})
@@ -53,7 +53,7 @@ class Login extends Component {
     auth = (event) => {
         event.preventDefault()
         const authData = {
-            email: this.state.Email,
+            email: this.state.email,
             password: this.state.password,
             returnSecureToken: true
         }

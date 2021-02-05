@@ -250,7 +250,8 @@ const sleepTimeAvg = newTimes => {
 }
 
 
-    if(action.type === "ADD"){
+switch(action.type){
+    case "ADD":
         const newTimes = [...state.Times];
 
         for (let i = 6; i >= 0; i--){
@@ -281,9 +282,8 @@ const sleepTimeAvg = newTimes => {
             sleepScore: (sleepHoursTotalAvg(newTimes) + sleepHoursConsistentAvg(newTimes) + sleepTimeAvg(newTimes)).toFixed(2).toString(),
             Times: newTimes
         }
-    }
-
-    if(action.type === "CHANGE_SETTINGS"){
+    
+    case "CHANGE_SETTINGS":
         if(action.timeOrDate === "Date"){
             return {
                 ...state,
@@ -325,25 +325,25 @@ const sleepTimeAvg = newTimes => {
                 timeSettings: action.value
             }
         }
-    }
-
-    if(action.type === "AUTH_FAIL"){
+    
+    // eslint-disable-next-line
+    case "AUTH_FAIL":
         return {
             ...state,
             error: action.error.response.data.error
         }
-    }
 
-    if(action.type === "AUTH_SUCCESS"){
+    case "AUTH_SUCCESS":
         return {
             ...state, 
             token: action.response.data.idToken,
             userId: action.response.data.localId,
             error: null
         }
-    }
+    default:
+        return state
+}
 
-    return state;
 };
 
 export default reducer;
