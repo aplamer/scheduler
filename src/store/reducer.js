@@ -1,5 +1,6 @@
 
-import {std} from 'mathjs'
+import { std} from 'mathjs'
+import axios from 'axios'
 const initialState = {
     sleepScore: "N/A",
     timeSettings: "Regular",
@@ -56,7 +57,8 @@ const initialState = {
    ,
    token: null,
    userId: null,
-   error: null
+   error: null,
+   dataId: null
 };
 
 const reducer = (state = initialState, action) => {
@@ -249,8 +251,8 @@ const sleepTimeAvg = newTimes => {
 
 }
 
-const synchState = () => {
-
+const synchState = (newState) => {
+    axios.put('https://sleep-scheduler-4c01c-default-rtdb.firebaseio.com/data/' + state.dataId + '.json?auth=' + state.token, newState)
 }
 
 switch(action.type){
@@ -279,7 +281,16 @@ switch(action.type){
             }
         }
 
+        
         // console.log(sleepHoursTotalAvg(newTimes), sleepHoursConsistentAvg(newTimes), sleepTimeAvg(newTimes))
+        if(state.token){
+            const newState = {
+                ...state,
+                sleepScore: (sleepHoursTotalAvg(newTimes) + sleepHoursConsistentAvg(newTimes) + sleepTimeAvg(newTimes)).toFixed(2).toString(),
+                Times: newTimes
+            }
+            synchState(newState)
+        }
         return {
             ...state,
             sleepScore: (sleepHoursTotalAvg(newTimes) + sleepHoursConsistentAvg(newTimes) + sleepTimeAvg(newTimes)).toFixed(2).toString(),
@@ -288,6 +299,13 @@ switch(action.type){
     
     case "CHANGE_SETTINGS":
         if(action.timeOrDate === "Date"){
+            if(state.token){
+                const newState = {
+                    ...state,
+                    dateSettings: action.value
+                }
+                synchState(newState)
+            }
             return {
                 ...state,
                 dateSettings: action.value
@@ -322,6 +340,14 @@ switch(action.type){
                     }
                 }
             }
+            if(state.token){
+                const newState = {
+                    ...state,
+                    Times: newTimes,
+                    timeSettings: action.value
+                }
+                synchState(newState)
+            }
             return {
                 ...state,
                 Times: newTimes,
@@ -336,13 +362,18 @@ switch(action.type){
             error: action.error.response.data.error
         }
 
-    case "AUTH_SUCCESS":
-        return {
-            ...state, 
-            token: action.response.data.idToken,
-            userId: action.response.data.localId,
-            error: null
+    case "AUTH_SIGNUP":
+        const newState = {
+            ...action.response
         }
+        return newState
+    
+    case "AUTH_LOGIN":
+        return{
+            ...action.response.data[Object.keys(action.response.data)[0]]
+        }
+         
+
     case "LOGOUT":
         return {
             ...initialState
