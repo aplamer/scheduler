@@ -370,7 +370,8 @@ switch(action.type){
     
     case "AUTH_LOGIN":
         return{
-            ...action.response.data[Object.keys(action.response.data)[0]]
+            ...action.response.data[Object.keys(action.response.data)[0]],
+            token: action.token
         }
          
 

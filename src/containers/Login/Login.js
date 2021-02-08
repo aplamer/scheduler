@@ -76,7 +76,7 @@ class Login extends Component {
         const queryParams = "?auth=" + response.data.idToken + '&orderBy="userId"&equalTo="' + response.data.localId + '"';
         axios.get('https://sleep-scheduler-4c01c-default-rtdb.firebaseio.com/data.json' + queryParams)
         .then(res => {
-            this.props.authLogin(res)
+            this.props.authLogin(res, response.data.idToken)
         })
     }
 
@@ -193,7 +193,7 @@ const mapDispatchToProps = dispatch => {
     return {
         authFail: (error) => dispatch({type: "AUTH_FAIL", error: error}),
         authSignUp: (response) => dispatch({type: "AUTH_SIGNUP", response: response}),
-        authLogin: (response) => dispatch({type: "AUTH_LOGIN", response: response})
+        authLogin: (response, newToken) => dispatch({type: "AUTH_LOGIN", response: response, token: newToken})
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(Login)
