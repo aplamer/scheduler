@@ -1,8 +1,9 @@
 
 import React, {Component} from 'react'
-import {BrowserRouter, Route} from 'react-router-dom'
+import {Route, HashRouter} from 'react-router-dom'
 import Home from '../containers/Home/Home'
 import History from '../containers/History/History'
+import createBrowserHistory from 'history/createBrowserHistory';
 import About from '../containers/About/About'
 import Settings from '../containers/Settings/Settings'
 import Header from '../containers/Header/Header'
@@ -36,19 +37,19 @@ class App extends Component{
     }
     render(){
         return(
-            <BrowserRouter>
-                    <Route path = "" component = {Header}/>
-                    <br></br>
-                    <br></br>
-                    <CurrentTime></CurrentTime>
-                    <br></br>
-                    <br></br>
-                    <br></br>
-                    <Route path = "/" exact component = {Home}/>
-                    <Route path = "/history" component = {History}/>
-                    <Route path = "/about" component = {About}/>
-                    <Route path = "/settings" component = {Settings}/>
-            </BrowserRouter>
+            <HashRouter history = {createBrowserHistory()}>
+                <Route path = "" component = {Header}/>
+                <br></br>
+                <br></br>
+                <CurrentTime></CurrentTime>
+                <br></br>
+                <br></br>
+                <br></br>
+                <Route path = "/" exact component = {Home}/>
+                <Route path = "/history" component = {History}/>
+                <Route path = "/about" component = {About}/>
+                <Route path = "/settings" component = {Settings}/>
+            </HashRouter>
         )
     }
 
