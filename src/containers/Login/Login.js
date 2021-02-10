@@ -57,9 +57,13 @@ class Login extends Component {
             userId: response.data.localId,
             error: null
         }
-        console.log(newState)
         axios.post('https://sleep-scheduler-4c01c-default-rtdb.firebaseio.com/data.json?auth=' + response.data.idToken, newState)
         .then( () =>{
+            const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000)
+            localStorage.setItem("token", response.data.idToken);
+            localStorage.setItem("expirationDate", expirationDate);
+            localStorage.setItem("userId", response.data.localId);
+
             const queryParams = "?auth=" + response.data.idToken + '&orderBy="userId"&equalTo="' + response.data.localId + '"';
             axios.get('https://sleep-scheduler-4c01c-default-rtdb.firebaseio.com/data.json' + queryParams)
             .then(res => {
@@ -76,6 +80,11 @@ class Login extends Component {
         const queryParams = "?auth=" + response.data.idToken + '&orderBy="userId"&equalTo="' + response.data.localId + '"';
         axios.get('https://sleep-scheduler-4c01c-default-rtdb.firebaseio.com/data.json' + queryParams)
         .then(res => {
+            
+            const expirationDate = new Date(new Date().getTime() + response.data.expiresIn * 1000)
+            localStorage.setItem("token", response.data.idToken);
+            localStorage.setItem("expirationDate", expirationDate);
+            localStorage.setItem("userId", response.data.localId);
             this.props.authLogin(res, response.data.idToken)
         })
     }

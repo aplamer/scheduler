@@ -369,6 +369,7 @@ switch(action.type){
         return newState
     
     case "AUTH_LOGIN":
+
         return{
             ...action.response.data[Object.keys(action.response.data)[0]],
             token: action.token
@@ -376,6 +377,9 @@ switch(action.type){
          
 
     case "LOGOUT":
+        localStorage.removeItem('token')
+        localStorage.removeItem('expirationDate')
+        localStorage.removeItem('userId')
         return {
             ...initialState
         }
