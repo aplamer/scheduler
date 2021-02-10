@@ -1,6 +1,7 @@
 .navLink{
     font-size: 25px;
     margin-left: 70px;
+    color: #32b4d6;
 }
 .navImage{
     height: 60px;
@@ -9,4 +10,8 @@
 .signIn {
     margin-right: 20px;
     width: 100px;
+}
+
+.Header {
+    background-color: #f1f1f1 !important;
 }

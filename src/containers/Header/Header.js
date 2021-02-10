@@ -4,7 +4,7 @@ import Nav from 'react-bootstrap/Nav'
 import Form from 'react-bootstrap/Form'
 import Button from 'react-bootstrap/Button'
 import classes from './Header.module.css'
-import icon from '../../assets/placeholder.png'
+import icon from '../../assets/logo.png'
 import Login from '../Login/Login'
 import { Component } from 'react'
 import {Link} from 'react-router-dom'
@@ -36,7 +36,7 @@ class Header extends Component {
         }
         return(
             <div>
-                <Navbar bg="light" variant="light" className = "py-3">
+                <Navbar className = {classes.Header} variant="light">
                     <img src = {icon} alt = "Null" className = {classes.navImage}></img>
                     <Nav variant = "pills" className="mr-auto">
                         <Link to="/" className = {classes.navLink}>Home</Link>

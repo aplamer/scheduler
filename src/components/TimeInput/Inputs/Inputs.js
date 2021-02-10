@@ -107,7 +107,11 @@ class Inputs extends Component {
                 </Row>
                 <br></br>
                 
+                <br></br>
                 <Button  onClick = {this.checkValidInput} className = {classes.Button}size = "lg" variant = "success">Save Times</Button>
+                <br></br>
+                
+                <br></br>
                 <hr></hr>
     
             </Container>
