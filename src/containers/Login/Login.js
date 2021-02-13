@@ -177,7 +177,7 @@ class Login extends Component {
                             style = {{
                                 borderColor: this.state.validPassword ?  null : "red"
                             }} 
-                            placeholder = "Password" aria-label="Large" aria-describedby="inputGroup-sizing-sm" 
+                            type = "password" placeholder = "Password" aria-label="Large" aria-describedby="inputGroup-sizing-sm" 
                             onChange = {(event) => this.checkValid(event, 'Password')}/>
                         </InputGroup>
                         <br></br>
